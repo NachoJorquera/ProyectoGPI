@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { getAuth, onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, app } from './firebaseConfig';
-import VisitorManagementPage from './VisitorManagementPage';
-import AdminAuth from './AdminAuth';
-import Navbar from './Navbar'; // Import the Navbar component
+import VisitorManagementPage from './components/VisitorManagementPage';
+import AdminAuth from './components/AdminAuth';
+import Navbar from './components/Navbar'; // Import the Navbar component
 import './global.css';
 import './App.css';
 

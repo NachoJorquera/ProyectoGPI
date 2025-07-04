@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from 'firebase/firestore';
-import { db } from './firebaseConfig';
+import { db } from '../firebaseConfig';
 
 import RegisterVisitorForm from './RegisterVisitorForm';
 import ActiveVisitorsList from './ActiveVisitorsList';

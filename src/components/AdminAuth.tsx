@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { db, app } from './firebaseConfig';
+import { db, app } from '../firebaseConfig';
 import styles from './AdminAuth.module.css';
 
 
@@ -157,7 +157,7 @@ const AdminAuth: React.FC = () => {
 
   const renderRegisterForm = () => (
     <>
-      <h2 className={styles.logoTitle}>Oh Client My Client</h2>
+      <h2 className={styles.logoTitle}>Nuevo Administrador</h2>
       <form onSubmit={handleAuth} className={styles.form}>
         <div className={styles.formGroup}>
           <label htmlFor="name">Nombre completo:</label>
