@@ -13,14 +13,19 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const [apartment, setApartment] = useState('');
   const [isFrequent, setIsFrequent] = useState(false);
   const [filteredFrequentVisitors, setFilteredFrequentVisitors] = useState<{ id: string; name: string; rut: string; }[]>([]);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const cleanRut = (inputRut: string) => {
-    return inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
+    let cleaned = inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
+    if (cleaned.endsWith('11')) {
+      cleaned = cleaned.slice(0, -2) + 'K';
+    }
+    return cleaned;
   };
 
   const validateRut = (inputRut: string): boolean => {
     const cleanedRut = cleanRut(inputRut);
-    if (!/^[0-9]+[0-9Kk]$/.test(cleanedRut)) {
+    if (!/^[0-9]+[0-9K]$/.test(cleanedRut)) {
       return false;
     }
 
@@ -82,13 +87,15 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
       return;
     }
 
-    if (!validateRut(rut)) {
+    const cleanedRut = cleanRut(rut);
+
+    if (!validateRut(cleanedRut)) {
       setRutError('RUT inválido. Por favor, ingrese un RUT válido.');
       return;
     }
 
     setRutError(null);
-    onAddVisitor({ name, rut, apartment, entryTime: Date.now() }, isFrequent);
+    onAddVisitor({ name, rut: cleanedRut, apartment, entryTime: Date.now() }, isFrequent);
     setName('');
     setRut('');
     setApartment('');
@@ -100,22 +107,24 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
       <h2 className={styles.formTitle}>Registrar Nuevo Visitante</h2>
       <div className={styles.formGroup}>
         <label htmlFor="rut">RUT:</label>
-        <input
-          type="text"
-          id="rut"
-          value={rut}
-          onChange={(e) => {
-            setRut(e.target.value);
-            const foundVisitor = frequentVisitors.find(fv => fv.rut === cleanRut(e.target.value));
-            if (foundVisitor) {
-              setName(foundVisitor.name);
-            } else {
-              setName('');
-            }
-          }}
-          className={styles.input}
-          list="frequent-visitors-ruts"
-        />
+        <div className={styles.inputContainer}>
+          <input
+            type="text"
+            id="rut"
+            value={rut}
+            onChange={(e) => {
+              setRut(e.target.value);
+              const foundVisitor = frequentVisitors.find(fv => fv.rut === cleanRut(e.target.value));
+              if (foundVisitor) {
+                setName(foundVisitor.name);
+              } else {
+                setName('');
+              }
+            }}
+            className={styles.input}
+            list="frequent-visitors-ruts"
+          />
+        </div>
         {rutError && <p className={styles.error}>{rutError}</p>}
         <datalist id="frequent-visitors-ruts">
           {filteredFrequentVisitors.map(fv => (
