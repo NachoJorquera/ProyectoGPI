@@ -20,6 +20,7 @@
 .formGroup {
   margin-bottom: 20px;
   position: relative;
+  padding: 0 20px;
 }
 
 /* Estilo para las etiquetas (label) */
