@@ -29,7 +29,13 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
   );
 
   const formatTime = (timestamp: number | null) => {
-    return timestamp ? new Date(timestamp).toLocaleString() : 'N/A';
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${day}/${month}/${year} ${time}`;
   };
 
   return (

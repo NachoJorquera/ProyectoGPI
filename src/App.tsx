@@ -6,7 +6,7 @@ import { db, app } from './firebaseConfig';
 import VisitorManagementPage from './components/VisitorManagementPage';
 import AdminAuth from './components/AdminAuth';
 import Navbar from './components/Navbar';
-import EncomiendasPage from './components/EncomiendasPage';
+import DeliveryManagementPage from './components/DeliveryManagementPage';
 import './global.css';
 import './App.css';
 
@@ -60,7 +60,7 @@ function App() {
         />
         <Route
           path="/encomiendas"
-          element={user && isAuthorized ? <EncomiendasPage /> : <Navigate to="/admin" replace />}
+          element={user && isAuthorized ? <DeliveryManagementPage /> : <Navigate to="/admin" replace />}
         />
         <Route
           path="/"
