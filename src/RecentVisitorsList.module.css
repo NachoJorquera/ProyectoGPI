@@ -1,0 +1,71 @@
+.container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  text-align: left;
+  color: #1f2937;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.noVisitors {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  padding: 20px;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f9fafb;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.table tr:hover {
+  background-color: #f3f4f6;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.statusBadge.active {
+  background-color: #10b981; /* Green for active */
+}
+
+.statusBadge.exited {
+  background-color: #6b7280; /* Gray for exited */
+}
