@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
 interface NavbarProps {
@@ -21,7 +21,15 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
       <div className={styles.navbarBrand}>
         <Link to="/">Oh Client My Client!</Link>
       </div>
-      <div className={styles.navbarLinks}>
+      <div className={styles.navbarCenterLinks}>
+        <NavLink to="/visitas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+          Visitas
+        </NavLink>
+        <NavLink to="/encomiendas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+          Encomiendas
+        </NavLink>
+      </div>
+      <div className={styles.navbarRightButtons}>
         <button onClick={toggleLanguage} className={styles.languageButton}>
           {language === 'es' ? 'English' : 'Español'}
         </button>

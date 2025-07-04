@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './RecentVisitorsList.module.css';
 
 interface Visitor {
@@ -18,7 +18,15 @@ interface RecentVisitorsListProps {
 }
 
 const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const sortedVisitors = [...visitors].sort((a, b) => b.entryTime - a.entryTime);
+
+  const filteredVisitors = sortedVisitors.filter(visitor =>
+    visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    visitor.rut.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    visitor.apartment.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const formatTime = (timestamp: number | null) => {
     return timestamp ? new Date(timestamp).toLocaleString() : 'N/A';
@@ -27,7 +35,14 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Historial de Visitas</h2>
-      {sortedVisitors.length === 0 ? (
+      <input
+        type="text"
+        placeholder="Buscar por nombre, RUT o apartamento..."
+        className={styles.searchInput}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      {filteredVisitors.length === 0 ? (
         <p className={styles.noVisitors}>No hay visitas registradas aún.</p>
       ) : (
         <div className={styles.tableContainer}>
@@ -41,17 +56,15 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
                 <th>Estacionamiento</th>
                 <th>Hora de Entrada</th>
                 <th>Hora de Salida</th>
-                <th>Estado</th>
               </tr>
             </thead>
             <tbody>
-              {sortedVisitors.map(visitor => (
+              {filteredVisitors.map(visitor => (
                 <tr key={visitor.id}>
                   <td>{visitor.name}</td>
                   <td>{visitor.rut}</td>
                   <td>{visitor.apartment}</td>
                   <td>{visitor.licensePlate || 'N/A'}</td>
-                  <td>{visitor.parkingSpotId || 'N/A'}</td>
                   <td>{formatTime(visitor.entryTime)}</td>
                   <td>{formatTime(visitor.exitTime)}</td>
                   <td>

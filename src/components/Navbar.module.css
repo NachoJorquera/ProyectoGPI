@@ -5,7 +5,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
 }
 
 .navbarBrand a {
@@ -15,9 +16,16 @@
   font-weight: 800;
 }
 
-.navbarLinks {
+.navbarCenterLinks {
   display: flex;
-  gap: 10px; /* Space between buttons */
+  gap: 10px;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.navbarRightButtons {
+  display: flex;
+  gap: 10px;
 }
 
 .languageButton {
@@ -50,4 +58,26 @@
 
 .logoutButton:hover {
   background-color: #dc2626;
+}
+
+.navLink {
+  color: #1f2937;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  font-weight: 600;
+}
+
+.navLink:hover {
+  background-color: #e5e7eb;
+}
+
+.activeLink {
+  background-color: #f97316;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
 }

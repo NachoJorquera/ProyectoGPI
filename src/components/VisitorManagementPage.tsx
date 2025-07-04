@@ -5,6 +5,7 @@ import { db } from '../firebaseConfig';
 import RegisterVisitorForm from './RegisterVisitorForm';
 import ActiveVisitorsList from './ActiveVisitorsList';
 import RecentVisitorsList from './RecentVisitorsList';
+import Modal from './Modal'; // Import the Modal component
 import styles from './VisitorManagementPage.module.css';
 
 interface Visitor {
@@ -28,8 +29,8 @@ interface FrequentVisitor {
 const VisitorManagementPage: React.FC = () => {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [frequentVisitors, setFrequentVisitors] = useState<FrequentVisitor[]>([]);
-  const [activeTab, setActiveTab] = useState<'register' | 'active' | 'recent'>('register');
-  
+  const [activeTab, setActiveTab] = useState<'active' | 'recent'>('active'); // Changed initial tab
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
 
   useEffect(() => {
     // Fetch visitors
@@ -77,6 +78,7 @@ const VisitorManagementPage: React.FC = () => {
           await addDoc(collection(db, 'frequent_visitors'), { name: newVisitor.name, rut: newVisitor.rut });
         }
       }
+      setIsModalOpen(false); // Close modal after adding visitor
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -108,18 +110,13 @@ const VisitorManagementPage: React.FC = () => {
     }
   };
 
-  
-
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Gestión de Visitantes</h1>
+      <button className={styles.newVisitButton} onClick={() => setIsModalOpen(true)}>
+        <span className={styles.plusIcon}>+</span> Nueva Visita
+      </button>
       <div className={styles.tabs}>
-        <button
-          className={`${styles.tabButton} ${activeTab === 'register' ? styles.active : ''}`}
-          onClick={() => setActiveTab('register')}
-        >
-          Registrar Visita
-        </button>
         <button
           className={`${styles.tabButton} ${activeTab === 'active' ? styles.active : ''}`}
           onClick={() => setActiveTab('active')}
@@ -132,13 +129,9 @@ const VisitorManagementPage: React.FC = () => {
         >
           Historial de Visitas
         </button>
-        
       </div>
 
       <div className={styles.content}>
-        {activeTab === 'register' && (
-          <RegisterVisitorForm onAddVisitor={handleAddVisitor} frequentVisitors={frequentVisitors} />
-        )}
         {activeTab === 'active' && (
           <ActiveVisitorsList visitors={visitors} onMarkExit={handleMarkExit} />
         )}
@@ -146,6 +139,10 @@ const VisitorManagementPage: React.FC = () => {
           <RecentVisitorsList visitors={visitors} />
         )}
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <RegisterVisitorForm onAddVisitor={handleAddVisitor} frequentVisitors={frequentVisitors} />
+      </Modal>
     </div>
   );
 };

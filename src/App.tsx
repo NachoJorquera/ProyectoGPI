@@ -5,7 +5,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db, app } from './firebaseConfig';
 import VisitorManagementPage from './components/VisitorManagementPage';
 import AdminAuth from './components/AdminAuth';
-import Navbar from './components/Navbar'; // Import the Navbar component
+import Navbar from './components/Navbar';
+import EncomiendasPage from './components/EncomiendasPage';
 import './global.css';
 import './App.css';
 
@@ -28,7 +29,7 @@ function App() {
           setIsAuthorized(false);
           await signOut(auth); // Sign out unauthorized users
         }
-        }
+      }
       setLoading(false);
     });
     return () => unsubscribe();
@@ -50,12 +51,20 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar onLogout={handleLogout} /> {/* Add the Navbar component here */}
+      <Navbar onLogout={handleLogout} />
       <Routes>
         <Route path="/admin" element={<AdminAuth />} />
         <Route
-          path="/"
+          path="/visitas"
           element={user && isAuthorized ? <VisitorManagementPage /> : <Navigate to="/admin" replace />}
+        />
+        <Route
+          path="/encomiendas"
+          element={user && isAuthorized ? <EncomiendasPage /> : <Navigate to="/admin" replace />}
+        />
+        <Route
+          path="/"
+          element={user && isAuthorized ? <Navigate to="/visitas" replace /> : <Navigate to="/admin" replace />}
         />
       </Routes>
     </div>

@@ -38,9 +38,9 @@
 }
 
 .input {
-  width: 50%;
+  width: 100%;
   padding: 12px 40px 12px 16px; /* Aumentado el padding derecho */
-  border: 1px solid #d1d5db;
+  border: 1px solid #9da4af;
   border-radius: 8px;
   box-sizing: border-box;
   font-size: 16px;
