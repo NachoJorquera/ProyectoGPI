@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, app } from './firebaseConfig';
@@ -13,6 +13,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -48,18 +49,16 @@ function App() {
   };
 
   return (
-    <Router>
-      <div className="App">
-        <Navbar onLogout={handleLogout} /> {/* Add the Navbar component here */}
-        <Routes>
-          <Route path="/admin" element={<AdminAuth />} />
-          <Route
-            path="/"
-            element={user && isAuthorized ? <VisitorManagementPage /> : <Navigate to="/admin" replace />}
-          />
-        </Routes>
-      </div>
-    </Router>
+    <div className="App">
+      <Navbar onLogout={handleLogout} /> {/* Add the Navbar component here */}
+      <Routes>
+        <Route path="/admin" element={<AdminAuth />} />
+        <Route
+          path="/"
+          element={user && isAuthorized ? <VisitorManagementPage /> : <Navigate to="/admin" replace />}
+        />
+      </Routes>
+    </div>
   );
 }
 

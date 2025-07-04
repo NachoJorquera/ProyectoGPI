@@ -41,12 +41,12 @@
 
 .tabButton:hover {
   background-color: #f3f4f6;
-  color: #1f2937;
+  color: #f97316;
 }
 
 .tabButton.active {
-  background-color: #e0e7ff;
-  color: #4f46e5;
+  background-color: #facfa2b1;
+  color: #f97316;
   border-bottom-color: transparent;
   font-weight: 600;
 }

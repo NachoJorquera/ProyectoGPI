@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RegisterVisitorForm.module.css';
+import { db } from '../firebaseConfig';
+import { collection, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+
+interface ParkingSpot {
+  id: string;
+  status: "disponible" | "ocupado";
+  type: "visita" | "residente";
+  floor: number;
+  assignedToVisitId: string | null;
+  notes?: string;
+}
 
 interface RegisterVisitorFormProps {
-  onAddVisitor: (visitor: { name: string; rut: string; apartment: string; entryTime: number }, isFrequent: boolean) => void;
+  onAddVisitor: (visitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => void;
   frequentVisitors: { id: string; name: string; rut: string; }[];
 }
 
@@ -12,8 +23,11 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const [rutError, setRutError] = useState<string | null>(null);
   const [apartment, setApartment] = useState('');
   const [isFrequent, setIsFrequent] = useState(false);
+  const [licensePlate, setLicensePlate] = useState('');
+  const [availableParkingSpots, setAvailableParkingSpots] = useState<ParkingSpot[]>([]);
+  const [selectedParkingSpot, setSelectedParkingSpot] = useState<string>('');
   const [filteredFrequentVisitors, setFilteredFrequentVisitors] = useState<{ id: string; name: string; rut: string; }[]>([]);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
+  
 
   const cleanRut = (inputRut: string) => {
     let cleaned = inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
@@ -62,6 +76,19 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   };
 
   useEffect(() => {
+    const parkingCollection = collection(db, 'estacionamientos');
+    const unsubscribe = onSnapshot(parkingCollection, (snapshot) => {
+      const parkingList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as ParkingSpot[];
+      setAvailableParkingSpots(parkingList.filter(spot => spot.type === 'visita' && spot.status === 'disponible'));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (rut.length > 0) {
       setFilteredFrequentVisitors(
         frequentVisitors.filter(fv => fv.rut.includes(rut) || fv.name.toLowerCase().includes(name.toLowerCase()))
@@ -80,7 +107,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !rut || !apartment) {
       alert('Por favor, complete todos los campos.');
@@ -95,11 +122,30 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     }
 
     setRutError(null);
-    onAddVisitor({ name, rut: cleanedRut, apartment, entryTime: Date.now() }, isFrequent);
+
+    let parkingSpotIdToAssign: string | null = null;
+    if (selectedParkingSpot) {
+      try {
+        const parkingRef = doc(db, 'estacionamientos', selectedParkingSpot);
+        await updateDoc(parkingRef, {
+          status: 'ocupado',
+          assignedToVisitId: rut, // Assuming RUT can be used as a temporary visit ID
+        });
+        parkingSpotIdToAssign = selectedParkingSpot;
+      } catch (error) {
+        console.error("Error al actualizar el estacionamiento:", error);
+        alert("Error al asignar el estacionamiento. Por favor, intente de nuevo.");
+        return;
+      }
+    }
+
+    onAddVisitor({ name, rut: cleanedRut, apartment, entryTime: Date.now(), licensePlate: licensePlate || null, parkingSpotId: parkingSpotIdToAssign }, isFrequent);
     setName('');
     setRut('');
     setApartment('');
     setIsFrequent(false);
+    setLicensePlate('');
+    setSelectedParkingSpot('');
   };
 
   return (
@@ -166,6 +212,33 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
           onChange={(e) => setApartment(e.target.value)}
           className={styles.input}
         />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="licensePlate">Patente del Vehículo (opcional):</label>
+        <input
+          type="text"
+          id="licensePlate"
+          value={licensePlate}
+          onChange={(e) => setLicensePlate(e.target.value)}
+          className={styles.input}
+          placeholder="Ej: AB123CD"
+        />
+      </div>
+      <div className={styles.formGroup}>
+        <label htmlFor="parkingSpot">Estacionamiento de Visita (opcional):</label>
+        <select
+          id="parkingSpot"
+          value={selectedParkingSpot}
+          onChange={(e) => setSelectedParkingSpot(e.target.value)}
+          className={styles.input}
+        >
+          <option value="">Seleccione un estacionamiento</option>
+          {availableParkingSpots.map(spot => (
+            <option key={spot.id} value={spot.id}>
+              {spot.id} (Piso: {spot.floor})
+            </option>
+          ))}
+        </select>
       </div>
       <div className={styles.checkboxGroup}>
         <input

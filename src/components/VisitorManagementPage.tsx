@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 import RegisterVisitorForm from './RegisterVisitorForm';
@@ -15,6 +15,8 @@ interface Visitor {
   entryTime: number;
   exitTime: number | null;
   status: 'En el edificio' | 'Salió';
+  licensePlate: string | null;
+  parkingSpotId: string | null;
 }
 
 interface FrequentVisitor {
@@ -56,7 +58,7 @@ const VisitorManagementPage: React.FC = () => {
     };
   }, []);
 
-  const handleAddVisitor = async (newVisitor: { name: string; rut: string; apartment: string; entryTime: number }, isFrequent: boolean) => {
+  const handleAddVisitor = async (newVisitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => {
     try {
       const visitorToAdd = {
         ...newVisitor,
@@ -83,10 +85,24 @@ const VisitorManagementPage: React.FC = () => {
   const handleMarkExit = async (visitorId: string) => {
     try {
       const visitorRef = doc(db, 'visitors', visitorId);
-      await updateDoc(visitorRef, {
-        exitTime: Date.now(),
-        status: 'Salió',
-      });
+      const visitorDoc = await getDoc(visitorRef); // Fetch the latest visitor data
+
+      if (visitorDoc.exists()) {
+        const visitorData = visitorDoc.data() as Visitor;
+
+        await updateDoc(visitorRef, {
+          exitTime: Date.now(),
+          status: 'Salió',
+        });
+
+        if (visitorData.parkingSpotId) {
+          const parkingRef = doc(db, 'estacionamientos', visitorData.parkingSpotId);
+          await updateDoc(parkingRef, {
+            status: 'disponible',
+            assignedToVisitId: null,
+          });
+        }
+      }
     } catch (e) {
       console.error("Error updating document: ", e);
     }

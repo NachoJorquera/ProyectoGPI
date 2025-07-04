@@ -9,6 +9,8 @@ interface Visitor {
   entryTime: number;
   exitTime: number | null;
   status: 'En el edificio' | 'Salió';
+  licensePlate: string | null;
+  parkingSpotId: string | null;
 }
 
 interface ActiveVisitorsListProps {
@@ -51,6 +53,8 @@ const ActiveVisitorsList: React.FC<ActiveVisitorsListProps> = ({ visitors, onMar
                 <th>Nombre</th>
                 <th>RUT</th>
                 <th>Apartamento</th>
+                <th>Patente</th>
+                <th>Estacionamiento</th>
                 <th>Hora de Entrada</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -62,6 +66,8 @@ const ActiveVisitorsList: React.FC<ActiveVisitorsListProps> = ({ visitors, onMar
                   <td>{visitor.name}</td>
                   <td>{visitor.rut}</td>
                   <td>{visitor.apartment}</td>
+                  <td>{visitor.licensePlate || 'N/A'}</td>
+                  <td>{visitor.parkingSpotId || 'N/A'}</td>
                   <td>{formatTime(visitor.entryTime)}</td>
                   <td>
                     <span className={`${styles.statusBadge} ${visitor.status === 'En el edificio' ? styles.active : styles.exited}`}>

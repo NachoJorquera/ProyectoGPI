@@ -9,6 +9,8 @@ interface Visitor {
   entryTime: number;
   exitTime: number | null;
   status: 'En el edificio' | 'Salió';
+  licensePlate: string | null;
+  parkingSpotId: string | null;
 }
 
 interface RecentVisitorsListProps {
@@ -35,6 +37,8 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
                 <th>Nombre</th>
                 <th>RUT</th>
                 <th>Apartamento</th>
+                <th>Patente</th>
+                <th>Estacionamiento</th>
                 <th>Hora de Entrada</th>
                 <th>Hora de Salida</th>
                 <th>Estado</th>
@@ -46,6 +50,8 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
                   <td>{visitor.name}</td>
                   <td>{visitor.rut}</td>
                   <td>{visitor.apartment}</td>
+                  <td>{visitor.licensePlate || 'N/A'}</td>
+                  <td>{visitor.parkingSpotId || 'N/A'}</td>
                   <td>{formatTime(visitor.entryTime)}</td>
                   <td>{formatTime(visitor.exitTime)}</td>
                   <td>
