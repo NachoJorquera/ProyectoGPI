@@ -36,3 +36,13 @@
 .closeButton:hover {
   color: #f97316; /* Change color on hover */
 }
+
+/* Media Queries for Responsive Modal */
+
+@media (max-width: 768px) {
+  .modalContent {
+    min-width: 90%;
+    max-height: 90vh;
+  }
+}
+

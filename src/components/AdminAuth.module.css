@@ -12,8 +12,6 @@
     Helvetica, Arial, sans-serif;
 }
 
-/* Estilo para el título para que se parezca al logo.
-   NOTA: Para un resultado perfecto, reemplaza el <h2> en AdminAuth.tsx por un <img> con tu logo. */
 h2 {
   font-family: 'Montserrat', sans-serif; /* Usar una fuente similar al logo */
   font-size: 4rem;
@@ -24,7 +22,6 @@ h2 {
   line-height: 1;
 }
 
-/* Se elimina el fondo y la sombra del formulario para un diseño plano */
 .form {
   background-color: transparent;
   padding: 0;
@@ -63,7 +60,6 @@ h2 {
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }
 
-/* Botón principal (Ingresar / Registrar) */
 .button {
   width: 100%;
   padding: 12px;
@@ -82,7 +78,6 @@ h2 {
   background-color: #ea580c;
 }
 
-/* Botón secundario (toggle para registrarse/iniciar sesión) */
 .toggleButton {
   width: 100%;
   padding: 12px;
@@ -109,12 +104,10 @@ h2 {
   text-align: center;
 }
 
-/* Se oculta la pista de la contraseña, ya que no está en el nuevo diseño */
 .passwordHint {
   display: none;
 }
 
-/* Estilo para el botón de mostrar/ocultar contraseña como un ícono */
 .togglePasswordButton {
   position: absolute;
   right: 12px;
@@ -125,7 +118,6 @@ h2 {
   width: 24px;
   height: 24px;
   padding: 0;
-  /* Usamos un SVG como background-image para el ícono del ojo */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'%3E%3C/path%3E%3Ccircle cx='12' cy='12' r='3'%3E%3C/circle%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
@@ -134,4 +126,18 @@ h2 {
 
 .togglePasswordButton:hover {
   text-decoration: none;
+}
+
+/* Media Queries for Responsive AdminAuth */
+
+@media (max-width: 768px) {
+  h2 {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 2.5rem;
+  }
 }

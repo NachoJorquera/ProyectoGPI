@@ -230,7 +230,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
           id="parkingSpot"
           value={selectedParkingSpot}
           onChange={(e) => setSelectedParkingSpot(e.target.value)}
-          className={styles.input}
+          className={styles.select}
         >
           <option value="">Seleccione un estacionamiento</option>
           {availableParkingSpots.map(spot => (

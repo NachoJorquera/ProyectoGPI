@@ -58,7 +58,7 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
           id="courier"
           value={courier}
           onChange={(e) => setCourier(e.target.value)}
-          className={styles.input}
+          className={styles.select}
           required
         >
           <option value="">Seleccione un courier</option>

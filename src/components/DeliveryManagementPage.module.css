@@ -79,3 +79,22 @@
 .content {
   padding: 0;
 }
+
+/* Media Queries for Responsive DeliveryManagementPage */
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .tabs {
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .tabButton {
+    width: 100%;
+    text-align: center;
+  }
+}
+

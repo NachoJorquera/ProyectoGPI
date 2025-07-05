@@ -100,3 +100,19 @@
 .exitButton:hover {
   background-color: #dc2626;
 }
+
+/* Media Queries for Responsive Tables */
+
+@media (max-width: 768px) {
+  .table th,
+  .table td {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .exitButton {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
