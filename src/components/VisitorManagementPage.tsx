@@ -63,6 +63,14 @@ const VisitorManagementPage: React.FC = () => {
 
   const handleAddVisitor = async (newVisitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => {
     try {
+      const activeVisitors = visitors.filter(v => v.status === 'En el edificio');
+      const isAlreadyIn = activeVisitors.some(v => v.rut === newVisitor.rut);
+
+      if (isAlreadyIn) {
+        alert('Esta persona ya se encuentra en el edificio.');
+        return;
+      }
+
       const visitorToAdd = {
         ...newVisitor,
         exitTime: null,

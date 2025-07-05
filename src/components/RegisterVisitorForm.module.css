@@ -166,3 +166,8 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
+
+.error {
+  color: #ef4444; /* Red color for error messages */
+  font-weight: 600;
+}
