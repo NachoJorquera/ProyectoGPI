@@ -39,10 +39,10 @@ const DeliveryManagementPage: React.FC = () => {
     };
   }, []);
 
-  const handleAddDelivery = async (newDelivery: Omit<Delivery, 'id' | 'status' | 'pickupTimestamp' | 'retrievedBy'>) => {
+  const handleAddDelivery = async (deliveryData: { apartment: string; recipientName: string; courier: string }) => {
     try {
       const deliveryToAdd = {
-        ...newDelivery,
+        ...deliveryData,
         status: 'Pendiente de retiro',
         arrivalTimestamp: Date.now(),
         pickupTimestamp: null,
