@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
 interface NavbarProps {
@@ -8,6 +8,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   const [language, setLanguage] = useState<'es' | 'en'>('es');
+  const location = useLocation();
 
   const toggleLanguage = () => {
     setLanguage(prevLang => (prevLang === 'es' ? 'en' : 'es'));
@@ -21,22 +22,26 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
       <div className={styles.navbarBrand}>
         <Link to="/">Oh Client My Client!</Link>
       </div>
-      <div className={styles.navbarCenterLinks}>
-        <NavLink to="/visitas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
-          Visitas
-        </NavLink>
-        <NavLink to="/encomiendas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
-          Encomiendas
-        </NavLink>
-      </div>
-      <div className={styles.navbarRightButtons}>
-        <button onClick={toggleLanguage} className={styles.languageButton}>
-          {language === 'es' ? 'English' : 'Español'}
-        </button>
-        <button onClick={onLogout} className={styles.logoutButton}>
-          Cerrar Sesión
-        </button>
-      </div>
+      {location.pathname !== '/admin' && (
+        <>
+          <div className={styles.navbarCenterLinks}>
+            <NavLink to="/visitas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+              Visitas
+            </NavLink>
+            <NavLink to="/encomiendas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+              Encomiendas
+            </NavLink>
+          </div>
+          <div className={styles.navbarRightButtons}>
+            <button onClick={toggleLanguage} className={styles.languageButton}>
+              {language === 'es' ? 'English' : 'Español'}
+            </button>
+            <button onClick={onLogout} className={styles.logoutButton}>
+              Cerrar Sesión
+            </button>
+          </div>
+        </>
+      )}
     </nav>
   );
 };
