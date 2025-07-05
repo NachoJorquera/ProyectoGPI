@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDoc, getDocs, where, writeBatch } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 
 import RegisterVisitorForm from './RegisterVisitorForm';
@@ -24,6 +24,8 @@ interface FrequentVisitor {
   id: string;
   name: string;
   rut: string;
+  apartment: string;
+  lastUsedPatente: string | null;
 }
 
 const VisitorManagementPage: React.FC = () => {
@@ -69,14 +71,29 @@ const VisitorManagementPage: React.FC = () => {
       await addDoc(collection(db, 'visitors'), visitorToAdd);
 
       if (isFrequent) {
-        // Check if frequent visitor already exists by RUT
-        const q = query(collection(db, 'frequent_visitors'));
+        const q = query(collection(db, 'frequent_visitors'), where('rut', '==', newVisitor.rut));
         const querySnapshot = await getDocs(q);
-        const existingFrequentVisitor = querySnapshot.docs.find(doc => doc.data().rut === newVisitor.rut);
+        const batch = writeBatch(db);
 
-        if (!existingFrequentVisitor) {
-          await addDoc(collection(db, 'frequent_visitors'), { name: newVisitor.name, rut: newVisitor.rut });
+        if (!querySnapshot.empty) {
+          // Update existing frequent visitor
+          const docRef = querySnapshot.docs[0].ref;
+          batch.update(docRef, {
+            name: newVisitor.name,
+            apartment: newVisitor.apartment,
+            lastUsedPatente: newVisitor.licensePlate || null,
+          });
+        } else {
+          // Add new frequent visitor
+          const newDocRef = doc(collection(db, 'frequent_visitors'));
+          batch.set(newDocRef, {
+            name: newVisitor.name,
+            rut: newVisitor.rut,
+            apartment: newVisitor.apartment,
+            lastUsedPatente: newVisitor.licensePlate || null,
+          });
         }
+        await batch.commit();
       }
       setIsModalOpen(false); // Close modal after adding visitor
     } catch (e) {

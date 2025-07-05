@@ -12,9 +12,17 @@ interface ParkingSpot {
   notes?: string;
 }
 
+interface FrequentVisitor {
+  id: string;
+  name: string;
+  rut: string;
+  apartment: string;
+  lastUsedPatente: string | null;
+}
+
 interface RegisterVisitorFormProps {
   onAddVisitor: (visitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => void;
-  frequentVisitors: { id: string; name: string; rut: string; }[];
+  frequentVisitors: FrequentVisitor[];
 }
 
 const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor, frequentVisitors }) => {
@@ -26,8 +34,8 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const [licensePlate, setLicensePlate] = useState('');
   const [availableParkingSpots, setAvailableParkingSpots] = useState<ParkingSpot[]>([]);
   const [selectedParkingSpot, setSelectedParkingSpot] = useState<string>('');
-  const [filteredFrequentVisitors, setFilteredFrequentVisitors] = useState<{ id: string; name: string; rut: string; }[]>([]);
-  
+  const [filteredFrequentVisitors, setFilteredFrequentVisitors] = useState<FrequentVisitor[]>([]);
+  const [lastUsedPatente, setLastUsedPatente] = useState<string | null>(null);
 
   const cleanRut = (inputRut: string) => {
     let cleaned = inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
@@ -91,18 +99,21 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   useEffect(() => {
     if (rut.length > 0) {
       setFilteredFrequentVisitors(
-        frequentVisitors.filter(fv => fv.rut.includes(rut) || fv.name.toLowerCase().includes(name.toLowerCase()))
+        frequentVisitors.filter(fv => fv.rut.includes(rut))
       );
     } else {
       setFilteredFrequentVisitors([]);
     }
-  }, [rut, name, frequentVisitors]);
+  }, [rut, frequentVisitors]);
 
   const handleFrequentVisitorSelect = (selectedRut: string) => {
     const selectedVisitor = frequentVisitors.find(fv => fv.rut === selectedRut);
     if (selectedVisitor) {
       setName(selectedVisitor.name);
       setRut(selectedVisitor.rut);
+      setApartment(selectedVisitor.apartment);
+      setLastUsedPatente(selectedVisitor.lastUsedPatente);
+      setLicensePlate(''); // Clear license plate on new selection
       setFilteredFrequentVisitors([]); // Clear suggestions after selection
     }
   };
@@ -146,6 +157,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     setIsFrequent(false);
     setLicensePlate('');
     setSelectedParkingSpot('');
+    setLastUsedPatente(null);
   };
 
   return (
@@ -158,30 +170,17 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
             type="text"
             id="rut"
             value={rut}
-            onChange={(e) => {
-              setRut(e.target.value);
-              const foundVisitor = frequentVisitors.find(fv => fv.rut === cleanRut(e.target.value));
-              if (foundVisitor) {
-                setName(foundVisitor.name);
-              } else {
-                setName('');
-              }
-            }}
+            onChange={(e) => setRut(e.target.value)}
             className={styles.input}
-            list="frequent-visitors-ruts"
+            autoComplete="off"
           />
         </div>
         {rutError && <p className={styles.error}>{rutError}</p>}
-        <datalist id="frequent-visitors-ruts">
-          {filteredFrequentVisitors.map(fv => (
-            <option key={fv.id} value={fv.rut} />
-          ))}
-        </datalist>
         {filteredFrequentVisitors.length > 0 && (
           <ul className={styles.suggestionsList}>
             {filteredFrequentVisitors.map(fv => (
               <li key={fv.id} onClick={() => handleFrequentVisitorSelect(fv.rut)}>
-                {fv.name} ({fv.rut})
+                {`${fv.rut} - ${fv.name}`}
               </li>
             ))}
           </ul>
@@ -195,13 +194,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={styles.input}
-          list="frequent-visitors-names"
         />
-        <datalist id="frequent-visitors-names">
-          {filteredFrequentVisitors.map(fv => (
-            <option key={fv.id} value={fv.name} />
-          ))}
-        </datalist>
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="apartment">Apartamento a Visitar:</label>
@@ -215,14 +208,21 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="licensePlate">Patente del Vehículo (opcional):</label>
-        <input
-          type="text"
-          id="licensePlate"
-          value={licensePlate}
-          onChange={(e) => setLicensePlate(e.target.value)}
-          className={styles.input}
-          placeholder="Ej: AB123CD"
-        />
+        <div className={styles.patenteContainer}>
+          <input
+            type="text"
+            id="licensePlate"
+            value={licensePlate}
+            onChange={(e) => setLicensePlate(e.target.value)}
+            className={styles.input}
+            placeholder="Ej: AB123CD"
+          />
+          {lastUsedPatente && (
+            <button type="button" className={styles.patenteSuggestion} onClick={() => setLicensePlate(lastUsedPatente)}>
+              Usar {lastUsedPatente}
+            </button>
+          )}
+        </div>
       </div>
       <div className={styles.formGroup}>
         <label htmlFor="parkingSpot">Estacionamiento de Visita (opcional):</label>
