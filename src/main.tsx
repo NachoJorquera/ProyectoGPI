@@ -1,7 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+
 import App from './App.tsx'
+import './index.css'
+import './i18n'; // Import i18n configuration
 import { app } from './firebaseConfig'; // Import the Firebase app instance
 import { getAuth } from 'firebase/auth'; // Import getAuth
 import { BrowserRouter as Router } from 'react-router-dom';

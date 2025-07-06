@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { useTranslation } from 'react-i18next';
 
 import RegisterDeliveryForm from './RegisterDeliveryForm';
 import PendingDeliveriesList from './PendingDeliveriesList';
@@ -23,6 +24,7 @@ const DeliveryManagementPage: React.FC = () => {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [activeTab, setActiveTab] = useState<'register' | 'pending' | 'history'>('pending');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const qDeliveries = query(collection(db, 'deliveries'));
@@ -70,24 +72,24 @@ const DeliveryManagementPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Gestión de Encomiendas</h1>
+      <h1 className={styles.title}>{t('delivery_management_title')}</h1>
       <button className={styles.newDeliveryButton} onClick={() => {
         setIsModalOpen(true);
       }}>
-        <span className={styles.plusIcon}>+</span> Nueva Encomienda
+        <span className={styles.plusIcon}>+</span> {t('new_delivery_button')}
       </button>
       <div className={styles.tabs}>
         <button
           className={`${styles.tabButton} ${activeTab === 'pending' ? styles.active : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Encomiendas Pendientes
+          {t('pending_deliveries_tab')}
         </button>
         <button
           className={`${styles.tabButton} ${activeTab === 'history' ? styles.active : ''}`}
           onClick={() => setActiveTab('history')}
         >
-          Historial de Encomiendas
+          {t('delivery_history_tab')}
         </button>
       </div>
 

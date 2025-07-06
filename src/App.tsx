@@ -9,12 +9,14 @@ import Navbar from './components/Navbar';
 import DeliveryManagementPage from './components/DeliveryManagementPage';
 import './global.css';
 import './App.css';
+import { useTranslation } from 'react-i18next';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const auth = getAuth(app);
@@ -36,7 +38,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <div>{t('loading')}</div>;
   }
 
   const handleLogout = async () => {

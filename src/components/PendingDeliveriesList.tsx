@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './PendingDeliveriesList.module.css';
 import Modal from './Modal';
+import { useTranslation } from 'react-i18next';
 
 interface Delivery {
   id: string;
@@ -23,6 +24,7 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDeliveryId, setSelectedDeliveryId] = useState<string | null>(null);
   const [retrievedByName, setRetrievedByName] = useState('');
+  const { t } = useTranslation();
 
   const pendingDeliveries = deliveries.filter(d => d.status === 'Pendiente de retiro');
 
@@ -52,33 +54,33 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
       setSelectedDeliveryId(null);
       setRetrievedByName('');
     } else {
-      alert('Por favor, ingrese el nombre de la persona que retira.');
+      alert(t('enter_retriever_name'));
     }
   };
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Encomiendas Pendientes</h2>
+      <h2 className={styles.title}>{t('pending_deliveries_title')}</h2>
       <input
         type="text"
-        placeholder="Buscar por departamento o destinatario..."
+        placeholder={t('search_delivery_placeholder')}
         className={styles.searchInput}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       {filteredDeliveries.length === 0 ? (
-        <p className={styles.noDeliveries}>No hay encomiendas pendientes en este momento.</p>
+        <p className={styles.noDeliveries}>{t('no_pending_deliveries')}</p>
       ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Apartamento</th>
-                <th>Destinatario</th>
-                <th>Remitente</th>
-                <th>Fecha de Llegada</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>{t('apartment_table_header_delivery')}</th>
+                <th>{t('recipient_table_header')}</th>
+                <th>{t('sender_table_header')}</th>
+                <th>{t('arrival_date_table_header')}</th>
+                <th>{t('status_table_header_delivery')}</th>
+                <th>{t('actions_table_header')}</th>
               </tr>
             </thead>
             <tbody>
@@ -90,7 +92,7 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
                   <td>{formatTime(delivery.arrivalTimestamp)}</td>
                   <td>
                     <span className={`${styles.statusBadge} ${styles.pending}`}>
-                      {delivery.status}
+                      {delivery.status === 'Pendiente de retiro' ? t('status_pending_pickup') : t('status_picked_up')}
                     </span>
                   </td>
                   <td>
@@ -98,7 +100,7 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
                       onClick={() => handleMarkPickupClick(delivery.id)}
                       className={styles.pickupButton}
                     >
-                      Entregar
+                      {t('deliver_button')}
                     </button>
                   </td>
                 </tr>
@@ -109,9 +111,9 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
       )}
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2>Confirmar Entrega</h2>
+        <h2>{t('confirm_delivery_title')}</h2>
         <div className={styles.formGroup}>
-          <label htmlFor="retrievedBy">Nombre de quien retira:</label>
+          <label htmlFor="retrievedBy">{t('retrieved_by_label')}</label>
           <input
             type="text"
             id="retrievedBy"
@@ -121,7 +123,7 @@ const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliverie
             required
           />
         </div>
-        <button onClick={handleConfirmPickup} className={styles.confirmButton}>Confirmar</button>
+        <button onClick={handleConfirmPickup} className={styles.confirmButton}>{t('confirm_button')}</button>
       </Modal>
     </div>
   );

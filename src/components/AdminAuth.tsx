@@ -8,6 +8,7 @@ import {
 import { doc, setDoc } from 'firebase/firestore';
 import { db, app } from '../firebaseConfig';
 import styles from './AdminAuth.module.css';
+import { useTranslation } from 'react-i18next';
 
 
 // Icono de Ojo (Visible)
@@ -52,6 +53,7 @@ const AdminAuth: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,11 +61,11 @@ const AdminAuth: React.FC = () => {
 
     if (isRegistering) {
       if (password !== confirmPassword) {
-        setError('Las contraseñas no coinciden.');
+        setError(t('password_mismatch'));
         return;
       }
       if (password.length < 6) {
-        setError('La contraseña debe tener un mínimo de 6 caracteres.');
+        setError(t('password_min_length'));
         return;
       }
     }
@@ -80,7 +82,7 @@ const AdminAuth: React.FC = () => {
           name: name,
           email: email,
         });
-        alert('Registro exitoso. Ahora puedes iniciar sesión.');
+        alert(t('registration_success'));
         setIsRegistering(false);
         setEmail('');
         setPassword('');
@@ -92,9 +94,9 @@ const AdminAuth: React.FC = () => {
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setError('Error: Revisa tu email y contraseña.');
+        setError(t('auth_error'));
       } else {
-        setError('Ocurrió un error desconocido.');
+        setError(t('unknown_error'));
       }
     }
   };
@@ -102,10 +104,10 @@ const AdminAuth: React.FC = () => {
   const renderLoginForm = () => (
     <>
       {/* NOTA: Es mejor usar una imagen para el logo */}
-      <h2 className={styles.logoTitle}>Inicio Sesión</h2>
+      <h2 className={styles.logoTitle}>{t('login_title')}</h2>
       <form onSubmit={handleAuth} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">{t('email_label')}</label>
           <input
             type="email"
             id="email"
@@ -113,11 +115,11 @@ const AdminAuth: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className={styles.input}
-            placeholder="Ingresa tu email"
+            placeholder={t('email_placeholder')}
           />
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="password">Contraseña:</label>
+          <label htmlFor="password">{t('password_label')}</label>
           <div className={styles.passwordWrapper}>
             <input
               type={showPassword ? 'text' : 'password'}
@@ -126,7 +128,7 @@ const AdminAuth: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className={styles.input}
-              placeholder="Ingresa tu contraseña"
+              placeholder={t('password_placeholder')}
             />
             <button
               type="button"
@@ -139,7 +141,7 @@ const AdminAuth: React.FC = () => {
         </div>
         {error && <p className={styles.error}>{error}</p>}
         <button type="submit" className={styles.button}>
-          Ingresar
+          {t('login_button')}
         </button>
         <button
           type="button"
@@ -149,7 +151,7 @@ const AdminAuth: React.FC = () => {
           }}
           className={styles.toggleButton}
         >
-          Registrarse
+          {t('register_button')}
         </button>
       </form>
     </>
@@ -157,10 +159,10 @@ const AdminAuth: React.FC = () => {
 
   const renderRegisterForm = () => (
     <>
-      <h2 className={styles.logoTitle}>Nuevo Administrador</h2>
+      <h2 className={styles.logoTitle}>{t('new_admin_title')}</h2>
       <form onSubmit={handleAuth} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="name">Nombre completo:</label>
+          <label htmlFor="name">{t('full_name_label')}</label>
           <input
             type="text"
             id="name"
@@ -168,11 +170,11 @@ const AdminAuth: React.FC = () => {
             onChange={(e) => setName(e.target.value)}
             required
             className={styles.input}
-            placeholder="Pedrito Perez"
+            placeholder={t('full_name_placeholder')}
           />
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">{t('email_label')}</label>
           <input
             type="email"
             id="email"
@@ -180,11 +182,11 @@ const AdminAuth: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             className={styles.input}
-            placeholder="Ingresa tu email"
+            placeholder={t('email_placeholder')}
           />
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="password">Contraseña:</label>
+          <label htmlFor="password">{t('password_label')}</label>
           <div className={styles.passwordWrapper}>
             <input
               type={showPassword ? 'text' : 'password'}
@@ -193,7 +195,7 @@ const AdminAuth: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className={styles.input}
-              placeholder="Ingresa tu contraseña"
+              placeholder={t('password_placeholder')}
             />
             <button
               type="button"
@@ -205,7 +207,7 @@ const AdminAuth: React.FC = () => {
           </div>
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="confirmPassword">Confirma tu contraseña:</label>
+          <label htmlFor="confirmPassword">{t('confirm_password_label')}</label>
           <div className={styles.passwordWrapper}>
             <input
               type={showConfirmPassword ? 'text' : 'password'}
@@ -214,7 +216,7 @@ const AdminAuth: React.FC = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className={styles.input}
-              placeholder="Confirma tu contraseña"
+              placeholder={t('confirm_password_placeholder')}
             />
             <button
               type="button"
@@ -227,7 +229,7 @@ const AdminAuth: React.FC = () => {
         </div>
         {error && <p className={styles.error}>{error}</p>}
         <button type="submit" className={styles.button}>
-          Registrarse
+          {t('register_button')}
         </button>
         <button
           type="button"
@@ -237,7 +239,7 @@ const AdminAuth: React.FC = () => {
           }}
           className={styles.toggleButton}
         >
-          Si ya tienes una cuenta ingresa aquí
+          {t('already_have_account')}
         </button>
       </form>
     </>

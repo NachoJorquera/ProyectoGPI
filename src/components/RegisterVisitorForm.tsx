@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './RegisterVisitorForm.module.css';
 import { db } from '../firebaseConfig';
 import { collection, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 interface ParkingSpot {
   id: string;
@@ -36,6 +37,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const [selectedParkingSpot, setSelectedParkingSpot] = useState<string>('');
   const [filteredFrequentVisitors, setFilteredFrequentVisitors] = useState<FrequentVisitor[]>([]);
   const [lastUsedPatente, setLastUsedPatente] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const cleanRut = (inputRut: string) => {
     let cleaned = inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
@@ -121,14 +123,14 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !rut || !apartment) {
-      alert('Por favor, complete todos los campos.');
+      alert(t('fill_all_fields'));
       return;
     }
 
     const cleanedRut = cleanRut(rut);
 
     if (!validateRut(cleanedRut)) {
-      setRutError('RUT inválido. Por favor, ingrese un RUT válido.');
+      setRutError(t('invalid_rut'));
       return;
     }
 
@@ -145,7 +147,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
         parkingSpotIdToAssign = selectedParkingSpot;
       } catch (error) {
         console.error("Error al actualizar el estacionamiento:", error);
-        alert("Error al asignar el estacionamiento. Por favor, intente de nuevo.");
+        alert(t('parking_update_error'));
         return;
       }
     }
@@ -162,9 +164,9 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.formTitle}>Registrar Nuevo Visitante</h2>
+      <h2 className={styles.formTitle}>{t('register_new_visitor_title')}</h2>
       <div className={styles.formGroup}>
-        <label htmlFor="rut">RUT:</label>
+        <label htmlFor="rut">{t('rut_label')}</label>
         <div className={styles.inputContainer}>
           <input
             type="text"
@@ -187,7 +189,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
         )}
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="name">Nombre Completo:</label>
+        <label htmlFor="name">{t('full_name_visitor_label')}</label>
         <input
           type="text"
           id="name"
@@ -197,7 +199,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
         />
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="apartment">Apartamento a Visitar:</label>
+        <label htmlFor="apartment">{t('apartment_to_visit_label')}</label>
         <input
           type="text"
           id="apartment"
@@ -207,7 +209,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
         />
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="licensePlate">Patente del Vehículo (opcional):</label>
+        <label htmlFor="licensePlate">{t('license_plate_optional')}</label>
         <div className={styles.patenteContainer}>
           <input
             type="text"
@@ -215,27 +217,27 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
             value={licensePlate}
             onChange={(e) => setLicensePlate(e.target.value)}
             className={styles.input}
-            placeholder="Ej: AB123CD"
+            placeholder={t('license_plate_example')}
           />
           {lastUsedPatente && (
             <button type="button" className={styles.patenteSuggestion} onClick={() => setLicensePlate(lastUsedPatente)}>
-              Usar {lastUsedPatente}
+              {t('use_patente')} {lastUsedPatente}
             </button>
           )}
         </div>
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="parkingSpot">Estacionamiento de Visita (opcional):</label>
+        <label htmlFor="parkingSpot">{t('parking_spot_optional')}</label>
         <select
           id="parkingSpot"
           value={selectedParkingSpot}
           onChange={(e) => setSelectedParkingSpot(e.target.value)}
           className={styles.select}
         >
-          <option value="">Seleccione un estacionamiento</option>
+          <option value="">{t('select_parking_spot')}</option>
           {availableParkingSpots.map(spot => (
             <option key={spot.id} value={spot.id}>
-              {spot.id} (Piso: {spot.floor})
+              {spot.id} ({t('floor')}: {spot.floor})
             </option>
           ))}
         </select>
@@ -248,9 +250,9 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
           onChange={(e) => setIsFrequent(e.target.checked)}
           className={styles.checkbox}
         />
-        <label htmlFor="isFrequent">Marcar como visitante frecuente</label>
+        <label htmlFor="isFrequent">{t('mark_as_frequent_visitor')}</label>
       </div>
-      <button type="submit" className={styles.submitButton}>Registrar Visita</button>
+      <button type="submit" className={styles.submitButton}>{t('register_visit_button')}</button>
     </form>
   );
 };

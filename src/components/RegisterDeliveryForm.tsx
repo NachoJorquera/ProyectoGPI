@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './RegisterDeliveryForm.module.css';
+import { useTranslation } from 'react-i18next';
 
 interface RegisterDeliveryFormProps {
   onAddDelivery: (delivery: { apartment: string; recipientName: string; courier: string }) => void;
@@ -10,15 +11,16 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
   const [recipientName, setRecipientName] = useState('');
   const [courier, setCourier] = useState('');
   const [otherCourier, setOtherCourier] = useState('');
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apartment || !recipientName || (!courier && !otherCourier)) {
-      alert('Por favor, complete todos los campos obligatorios.');
+      alert(t('fill_required_fields'));
       return;
     }
 
-    const finalCourier = courier === 'Otro...' ? otherCourier : courier;
+    const finalCourier = courier === t('other') ? otherCourier : courier;
 
     onAddDelivery({ apartment, recipientName, courier: finalCourier });
     setApartment('');
@@ -29,9 +31,9 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.formTitle}>Registrar Nueva Encomienda</h2>
+      <h2 className={styles.formTitle}>{t('register_new_delivery_title')}</h2>
       <div className={styles.formGroup}>
-        <label htmlFor="apartment">Departamento:</label>
+        <label htmlFor="apartment">{t('apartment_label')}</label>
         <input
           type="text"
           id="apartment"
@@ -42,7 +44,7 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
         />
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="recipientName">Destinatario:</label>
+        <label htmlFor="recipientName">{t('recipient_name_label')}</label>
         <input
           type="text"
           id="recipientName"
@@ -53,7 +55,7 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
         />
       </div>
       <div className={styles.formGroup}>
-        <label htmlFor="courier">Remitente / Courier:</label>
+        <label htmlFor="courier">{t('courier_label')}</label>
         <select
           id="courier"
           value={courier}
@@ -61,17 +63,17 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
           className={styles.select}
           required
         >
-          <option value="">Seleccione un courier</option>
-          <option value="Mercado Libre">Mercado Libre</option>
-          <option value="Chilexpress">Chilexpress</option>
-          <option value="Blue Express">Blue Express</option>
-          <option value="Correos de Chile">Correos de Chile</option>
-          <option value="Otro...">Otro...</option>
+          <option value="">{t('select_courier')}</option>
+          <option value="Mercado Libre">{t('mercadolibre')}</option>
+          <option value="Chilexpress">{t('chilexpress')}</option>
+          <option value="Blue Express">{t('blue_express')}</option>
+          <option value="Correos de Chile">{t('correos_de_chile')}</option>
+          <option value={t('other')}>{t('other')}</option>
         </select>
       </div>
-      {courier === 'Otro...' && (
+      {courier === t('other') && (
         <div className={styles.formGroup}>
-          <label htmlFor="otherCourier">Especificar Otro Remitente:</label>
+          <label htmlFor="otherCourier">{t('specify_other_courier')}</label>
           <input
             type="text"
             id="otherCourier"
@@ -82,7 +84,7 @@ const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelive
           />
         </div>
       )}
-      <button type="submit" className={styles.submitButton}>Registrar</button>
+      <button type="submit" className={styles.submitButton}>{t('register_button_delivery')}</button>
     </form>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './Navbar.module.css';
 
 interface NavbarProps {
@@ -7,14 +8,11 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
-  const [language, setLanguage] = useState<'es' | 'en'>('es');
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
-  const toggleLanguage = () => {
-    setLanguage(prevLang => (prevLang === 'es' ? 'en' : 'es'));
-    // Here you would typically update a context or global state for language
-    // and trigger re-renders of components that use translated text.
-    console.log(`Language changed to: ${language === 'es' ? 'en' : 'es'}`);
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
   };
 
   return (
@@ -23,25 +21,25 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
         <Link to="/">Oh Client My Client!</Link>
       </div>
       {location.pathname !== '/admin' && (
-        <>
-          <div className={styles.navbarCenterLinks}>
-            <NavLink to="/visitas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
-              Visitas
-            </NavLink>
-            <NavLink to="/encomiendas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
-              Encomiendas
-            </NavLink>
-          </div>
-          <div className={styles.navbarRightButtons}>
-            <button onClick={toggleLanguage} className={styles.languageButton}>
-              {language === 'es' ? 'English' : 'Español'}
-            </button>
-            <button onClick={onLogout} className={styles.logoutButton}>
-              Cerrar Sesión
-            </button>
-          </div>
-        </>
+        <div className={styles.navbarCenterLinks}>
+          <NavLink to="/visitas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+            {t('visitors')}
+          </NavLink>
+          <NavLink to="/encomiendas" className={({ isActive }) => isActive ? styles.activeLink : styles.navLink}>
+            {t('deliveries')}
+          </NavLink>
+        </div>
       )}
+      <div className={styles.navbarRightButtons}>
+        <button onClick={() => changeLanguage(i18n.language === 'es' ? 'en' : 'es')} className={styles.languageButton}>
+          {t(i18n.language === 'es' ? 'english' : 'spanish')}
+        </button>
+        {location.pathname !== '/admin' && (
+          <button onClick={onLogout} className={styles.logoutButton}>
+            {t('logout')}
+          </button>
+        )}
+      </div>
     </nav>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './RecentVisitorsList.module.css';
+import { useTranslation } from 'react-i18next';
 
 interface Visitor {
   id: string;
@@ -19,6 +20,7 @@ interface RecentVisitorsListProps {
 
 const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   const sortedVisitors = [...visitors].sort((a, b) => b.entryTime - a.entryTime);
 
@@ -40,28 +42,29 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Historial de Visitas</h2>
+      <h2 className={styles.title}>{t('recent_visitors_title')}</h2>
       <input
         type="text"
-        placeholder="Buscar por nombre, RUT o apartamento..."
+        placeholder={t('search_visitor_placeholder')}
         className={styles.searchInput}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       {filteredVisitors.length === 0 ? (
-        <p className={styles.noVisitors}>No hay visitas registradas aún.</p>
+        <p className={styles.noVisitors}>{t('no_visitors_registered')}</p>
       ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>RUT</th>
-                <th>Apartamento</th>
-                <th>Patente</th>
-                <th>Estacionamiento</th>
-                <th>Hora de Entrada</th>
-                <th>Hora de Salida</th>
+                <th>{t('name_table_header')}</th>
+                <th>{t('rut_table_header')}</th>
+                <th>{t('apartment_table_header')}</th>
+                <th>{t('license_plate_table_header')}</th>
+                <th>{t('parking_spot_table_header')}</th>
+                <th>{t('entry_time_table_header')}</th>
+                <th>{t('exit_time_table_header')}</th>
+                <th>{t('status_table_header')}</th>
               </tr>
             </thead>
             <tbody>
@@ -71,11 +74,12 @@ const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => 
                   <td>{visitor.rut}</td>
                   <td>{visitor.apartment}</td>
                   <td>{visitor.licensePlate || 'N/A'}</td>
+                  <td>{visitor.parkingSpotId || 'N/A'}</td>
                   <td>{formatTime(visitor.entryTime)}</td>
                   <td>{formatTime(visitor.exitTime)}</td>
                   <td>
                     <span className={`${styles.statusBadge} ${visitor.status === 'En el edificio' ? styles.active : styles.exited}`}>
-                      {visitor.status}
+                      {visitor.status === 'En el edificio' ? t('status_in_building') : t('status_exited')}
                     </span>
                   </td>
                 </tr>

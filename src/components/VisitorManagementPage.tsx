@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, onSnapshot, addDoc, updateDoc, doc, getDoc, getDocs, where, writeBatch } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { useTranslation } from 'react-i18next';
 
 import RegisterVisitorForm from './RegisterVisitorForm';
 import ActiveVisitorsList from './ActiveVisitorsList';
@@ -33,6 +34,7 @@ const VisitorManagementPage: React.FC = () => {
   const [frequentVisitors, setFrequentVisitors] = useState<FrequentVisitor[]>([]);
   const [activeTab, setActiveTab] = useState<'active' | 'recent'>('active'); // Changed initial tab
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Fetch visitors
@@ -67,7 +69,7 @@ const VisitorManagementPage: React.FC = () => {
       const isAlreadyIn = activeVisitors.some(v => v.rut === newVisitor.rut);
 
       if (isAlreadyIn) {
-        alert('Esta persona ya se encuentra en el edificio.');
+        alert(t('visitor_already_in_building'));
         return;
       }
 
@@ -137,22 +139,22 @@ const VisitorManagementPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Gestión de Visitantes</h1>
+      <h1 className={styles.title}>{t('visitor_management_title')}</h1>
       <button className={styles.newVisitButton} onClick={() => setIsModalOpen(true)}>
-        <span className={styles.plusIcon}>+</span> Nueva Visita
+        <span className={styles.plusIcon}>+</span> {t('new_visit_button')}
       </button>
       <div className={styles.tabs}>
         <button
           className={`${styles.tabButton} ${activeTab === 'active' ? styles.active : ''}`}
           onClick={() => setActiveTab('active')}
         >
-          Visitantes Activos
+          {t('active_visitors_tab')}
         </button>
         <button
           className={`${styles.tabButton} ${activeTab === 'recent' ? styles.active : ''}`}
           onClick={() => setActiveTab('recent')}
         >
-          Historial de Visitas
+          {t('visit_history_tab')}
         </button>
       </div>
 

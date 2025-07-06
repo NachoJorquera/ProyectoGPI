@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './DeliveryHistoryList.module.css';
+import { useTranslation } from 'react-i18next';
 
 interface Delivery {
   id: string;
@@ -18,6 +19,7 @@ interface DeliveryHistoryListProps {
 
 const DeliveryHistoryList: React.FC<DeliveryHistoryListProps> = ({ deliveries }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { t } = useTranslation();
 
   const sortedDeliveries = [...deliveries].sort((a, b) => b.arrivalTimestamp - a.arrivalTimestamp);
 
@@ -39,28 +41,28 @@ const DeliveryHistoryList: React.FC<DeliveryHistoryListProps> = ({ deliveries })
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Historial de Encomiendas</h2>
+      <h2 className={styles.title}>{t('delivery_history_list_title')}</h2>
       <input
         type="text"
-        placeholder="Buscar por departamento, destinatario o remitente..."
+        placeholder={t('search_delivery_history_placeholder')}
         className={styles.searchInput}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
       {filteredDeliveries.length === 0 ? (
-        <p className={styles.noDeliveries}>No hay encomiendas registradas aún.</p>
+        <p className={styles.noDeliveries}>{t('no_deliveries_registered')}</p>
       ) : (
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Apartamento</th>
-                <th>Destinatario</th>
-                <th>Remitente</th>
-                <th>Llegada</th>
-                <th>Estado</th>
-                <th>Retirado Por</th>
-                <th>Fecha de Entrega</th>
+                <th>{t('apartment_table_header_delivery')}</th>
+                <th>{t('recipient_table_header')}</th>
+                <th>{t('sender_table_header')}</th>
+                <th>{t('arrival_table_header')}</th>
+                <th>{t('status_table_header_delivery')}</th>
+                <th>{t('picked_up_by_table_header')}</th>
+                <th>{t('delivery_date_table_header')}</th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +74,7 @@ const DeliveryHistoryList: React.FC<DeliveryHistoryListProps> = ({ deliveries })
                   <td>{formatTime(delivery.arrivalTimestamp)}</td>
                   <td>
                     <span className={`${styles.statusBadge} ${delivery.status === 'Pendiente de retiro' ? styles.pending : styles.retirado}`}>
-                      {delivery.status}
+                      {delivery.status === 'Pendiente de retiro' ? t('status_pending_pickup') : t('status_picked_up')}
                     </span>
                   </td>
                   <td>{delivery.retrievedBy || 'N/A'}</td>
