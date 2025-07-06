@@ -1,69 +1,51 @@
-# React + TypeScript + Vite
+# AdminControl
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una aplicación web diseñada para digitalizar y centralizar las operaciones de la recepción de un edificio de departamentos. Permite gestionar en tiempo real el registro de visitas, la recepción de deliveries y la asignación de estacionamientos, mejorando la seguridad y eficiencia.
 
-Currently, two official plugins are available:
+[**Ver Demo en Vivo**](https://admincontrol-37268.web.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Características Principales
 
-## Expanding the ESLint configuration
+*   Registro de visitas con autocompletado para visitas frecuentes.
+*   Gestión de estacionamientos de visita en tiempo real.
+*   Registro de deliveries (paquetería, correspondencia).
+*   Autenticación de usuarios (recepcionistas/administradores).
+*   Despliegue continuo automatizado con GitHub Actions.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tecnologías Utilizadas
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*   **Frontend:** React, TypeScript, Vite
+*   **Estilos:** CSS Modules
+*   **Backend y Base de Datos:** Firebase (Firestore, Authentication)
+*   **Enrutamiento:** React Router
+*   **Internacionalización:** i18next
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Instalación y Uso Local
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/NachoJorquera/gestion-edificio.git
+    ```
+2.  **Instalar dependencias:**
+    ```bash
+    cd gestion-edificio
+    npm install
+    ```
+3.  **Ejecutar la aplicación:**
+    ```bash
+    npm run dev
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Despliegue
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+El proyecto está desplegado en Firebase Hosting. El despliegue se realiza de forma automática en cada push a la rama `main` mediante GitHub Actions.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Autor
+
+*   **Ignacio Jorquera Contreras**
+    *   GitHub: [@NachoJorquera](https://github.com/NachoJorquera)
+    *   LinkedIn: [Ignacio Jorquera](https://www.linkedin.com/in/ignacio-jorquera-32a5691a7)
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT.
