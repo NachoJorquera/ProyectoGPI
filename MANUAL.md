@@ -12,8 +12,6 @@ Para comenzar a usar el sistema, primero debes iniciar sesión.
 2.  **Ingresa tus datos:** Escribe tu correo electrónico y tu contraseña en los campos correspondientes.
 3.  **Haz clic en "Iniciar Sesión"**.
 
-![Ojo](https://i.imgur.com/P9bLh6A.png) Si no puedes ver bien tu contraseña, haz clic en el ícono del ojo para que se muestre.
-
 ### ¿Es tu primera vez usando el sistema?
 
 Si aún no tienes una cuenta, debes registrarte.
