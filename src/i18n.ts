@@ -15,10 +15,10 @@ i18n
         translation: es,
       },
     },
-    lng: 'es', // default language
-    fallbackLng: 'es', // fallback language
+    lng: 'es', // lenguaje por defecto
+    fallbackLng: 'es', // lenguaje de reserva
     interpolation: {
-      escapeValue: false, // react already escapes by default
+      escapeValue: false,
     },
   });
 

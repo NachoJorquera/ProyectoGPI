@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import styles from './RegisterDeliveryForm.module.css';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir las propiedades del componente RegisterDeliveryForm.
 interface RegisterDeliveryFormProps {
   onAddDelivery: (delivery: { apartment: string; recipientName: string; courier: string }) => void;
 }
 
+// Componente para registrar una nueva encomienda.
 const RegisterDeliveryForm: React.FC<RegisterDeliveryFormProps> = ({ onAddDelivery }) => {
+  // Estados para los campos del formulario.
   const [apartment, setApartment] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [courier, setCourier] = useState('');
   const [otherCourier, setOtherCourier] = useState('');
   const { t } = useTranslation();
 
+  // Maneja el envío del formulario.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apartment || !recipientName || (!courier && !otherCourier)) {

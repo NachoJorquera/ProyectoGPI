@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import RegisterVisitorForm from './RegisterVisitorForm';
 import ActiveVisitorsList from './ActiveVisitorsList';
 import RecentVisitorsList from './RecentVisitorsList';
-import Modal from './Modal'; // Import the Modal component
+import Modal from './Modal'; // Importa el componente Modal.
 import styles from './VisitorManagementPage.module.css';
 
+// Interfaz para definir la estructura de un objeto de visitante.
 interface Visitor {
   id: string;
   name: string;
@@ -21,6 +22,7 @@ interface Visitor {
   parkingSpotId: string | null;
 }
 
+// Interfaz para definir la estructura de un objeto de visitante frecuente.
 interface FrequentVisitor {
   id: string;
   name: string;
@@ -29,15 +31,18 @@ interface FrequentVisitor {
   lastUsedPatente: string | null;
 }
 
+// Componente para la gestión de visitantes.
 const VisitorManagementPage: React.FC = () => {
+  // Estados para los visitantes, visitantes frecuentes, pestaña activa y modal.
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [frequentVisitors, setFrequentVisitors] = useState<FrequentVisitor[]>([]);
-  const [activeTab, setActiveTab] = useState<'active' | 'recent'>('active'); // Changed initial tab
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [activeTab, setActiveTab] = useState<'active' | 'recent'>('active'); // Cambia la pestaña inicial.
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para la visibilidad del modal.
   const { t } = useTranslation();
 
+  // Efecto para obtener los visitantes y visitantes frecuentes de Firestore.
   useEffect(() => {
-    // Fetch visitors
+    // Obtiene los visitantes.
     const qVisitors = query(collection(db, 'visitors'));
     const unsubscribeVisitors = onSnapshot(qVisitors, (snapshot) => {
       const visitorsData: Visitor[] = snapshot.docs.map(doc => ({
@@ -47,7 +52,7 @@ const VisitorManagementPage: React.FC = () => {
       setVisitors(visitorsData);
     });
 
-    // Fetch frequent visitors
+    // Obtiene los visitantes frecuentes.
     const qFrequentVisitors = query(collection(db, 'frequent_visitors'));
     const unsubscribeFrequentVisitors = onSnapshot(qFrequentVisitors, (snapshot) => {
       const frequentVisitorsData: FrequentVisitor[] = snapshot.docs.map(doc => ({
@@ -63,6 +68,7 @@ const VisitorManagementPage: React.FC = () => {
     };
   }, []);
 
+  // Maneja la adición de un nuevo visitante.
   const handleAddVisitor = async (newVisitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => {
     try {
       const activeVisitors = visitors.filter(v => v.status === 'En el edificio');
@@ -86,7 +92,7 @@ const VisitorManagementPage: React.FC = () => {
         const batch = writeBatch(db);
 
         if (!querySnapshot.empty) {
-          // Update existing frequent visitor
+          // Actualiza un visitante frecuente existente.
           const docRef = querySnapshot.docs[0].ref;
           batch.update(docRef, {
             name: newVisitor.name,
@@ -94,7 +100,7 @@ const VisitorManagementPage: React.FC = () => {
             lastUsedPatente: newVisitor.licensePlate || null,
           });
         } else {
-          // Add new frequent visitor
+          // Agrega un nuevo visitante frecuente.
           const newDocRef = doc(collection(db, 'frequent_visitors'));
           batch.set(newDocRef, {
             name: newVisitor.name,
@@ -105,16 +111,17 @@ const VisitorManagementPage: React.FC = () => {
         }
         await batch.commit();
       }
-      setIsModalOpen(false); // Close modal after adding visitor
+      setIsModalOpen(false); // Cierra el modal después de agregar el visitante.
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   };
 
+  // Maneja la marcación de la salida de un visitante.
   const handleMarkExit = async (visitorId: string) => {
     try {
       const visitorRef = doc(db, 'visitors', visitorId);
-      const visitorDoc = await getDoc(visitorRef); // Fetch the latest visitor data
+      const visitorDoc = await getDoc(visitorRef); // Obtiene los datos más recientes del visitante.
 
       if (visitorDoc.exists()) {
         const visitorData = visitorDoc.data() as Visitor;

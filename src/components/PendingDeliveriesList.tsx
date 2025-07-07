@@ -3,6 +3,7 @@ import styles from './PendingDeliveriesList.module.css';
 import Modal from './Modal';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir la estructura de un objeto de encomienda.
 interface Delivery {
   id: string;
   apartment: string;
@@ -14,39 +15,47 @@ interface Delivery {
   retrievedBy: string | null;
 }
 
+// Interfaz para definir las propiedades del componente PendingDeliveriesList.
 interface PendingDeliveriesListProps {
   deliveries: Delivery[];
   onMarkAsPickedUp: (deliveryId: string, retrievedByName: string) => void;
 }
 
+// Componente para mostrar la lista de encomiendas pendientes.
 const PendingDeliveriesList: React.FC<PendingDeliveriesListProps> = ({ deliveries, onMarkAsPickedUp }) => {
+  // Estados para el término de búsqueda, el modal y el nombre de quien retira.
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDeliveryId, setSelectedDeliveryId] = useState<string | null>(null);
   const [retrievedByName, setRetrievedByName] = useState('');
   const { t } = useTranslation();
 
+  // Filtra las encomiendas para mostrar solo las pendientes.
   const pendingDeliveries = deliveries.filter(d => d.status === 'Pendiente de retiro');
 
+  // Filtra las encomiendas pendientes según el término de búsqueda.
   const filteredDeliveries = pendingDeliveries.filter(delivery =>
     delivery.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
     delivery.recipientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Formatea la fecha y hora.
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // El mes es en base 0.
     const year = date.getFullYear();
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return `${day}/${month}/${year} ${time}`;
   };
 
+  // Maneja el clic en el botón de marcar como retirado.
   const handleMarkPickupClick = (deliveryId: string) => {
     setSelectedDeliveryId(deliveryId);
     setIsModalOpen(true);
   };
 
+  // Confirma el retiro de la encomienda.
   const handleConfirmPickup = () => {
     if (selectedDeliveryId && retrievedByName) {
       onMarkAsPickedUp(selectedDeliveryId, retrievedByName);

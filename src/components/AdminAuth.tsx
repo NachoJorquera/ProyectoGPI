@@ -43,7 +43,9 @@ const EyeOffIcon = () => (
   </svg>
 );
 
+// Componente para la autenticación de administradores.
 const AdminAuth: React.FC = () => {
+  // Estados para el formulario de autenticación.
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -55,10 +57,12 @@ const AdminAuth: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Maneja la autenticación (registro o inicio de sesión).
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
+    // Validaciones para el registro.
     if (isRegistering) {
       if (password !== confirmPassword) {
         setError(t('password_mismatch'));
@@ -73,6 +77,7 @@ const AdminAuth: React.FC = () => {
     const auth = getAuth(app);
     try {
       if (isRegistering) {
+        // Crea un nuevo usuario administrador.
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -89,6 +94,7 @@ const AdminAuth: React.FC = () => {
         setConfirmPassword('');
         setName('');
       } else {
+        // Inicia sesión con un usuario existente.
         await signInWithEmailAndPassword(auth, email, password);
         navigate('/');
       }
@@ -101,6 +107,7 @@ const AdminAuth: React.FC = () => {
     }
   };
 
+  // Renderiza el formulario de inicio de sesión.
   const renderLoginForm = () => (
     <>
       {/* NOTA: Es mejor usar una imagen para el logo */}
@@ -157,6 +164,7 @@ const AdminAuth: React.FC = () => {
     </>
   );
 
+  // Renderiza el formulario de registro.
   const renderRegisterForm = () => (
     <>
       <h2 className={styles.logoTitle}>{t('new_admin_title')}</h2>

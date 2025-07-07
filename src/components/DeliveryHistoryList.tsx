@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './DeliveryHistoryList.module.css';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir la estructura de un objeto de encomienda.
 interface Delivery {
   id: string;
   apartment: string;
@@ -13,27 +14,32 @@ interface Delivery {
   retrievedBy: string | null;
 }
 
+// Interfaz para definir las propiedades del componente DeliveryHistoryList.
 interface DeliveryHistoryListProps {
   deliveries: Delivery[];
 }
 
+// Componente para mostrar el historial de encomiendas.
 const DeliveryHistoryList: React.FC<DeliveryHistoryListProps> = ({ deliveries }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation();
 
+  // Ordena las encomiendas por fecha de llegada.
   const sortedDeliveries = [...deliveries].sort((a, b) => b.arrivalTimestamp - a.arrivalTimestamp);
 
+  // Filtra las encomiendas según el término de búsqueda.
   const filteredDeliveries = sortedDeliveries.filter(delivery =>
     delivery.apartment.toLowerCase().includes(searchTerm.toLowerCase()) ||
     delivery.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     delivery.courier.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Formatea la fecha y hora.
   const formatTime = (timestamp: number | null) => {
     if (!timestamp) return 'N/A';
     const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // El mes es en base 0.
     const year = date.getFullYear();
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return `${day}/${month}/${year} ${time}`;

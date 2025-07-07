@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+// Componente para la página de encomiendas.
 const EncomiendasPage: React.FC = () => {
   const { t } = useTranslation();
   return (

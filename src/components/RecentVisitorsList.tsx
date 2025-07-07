@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './RecentVisitorsList.module.css';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir la estructura de un objeto de visitante.
 interface Visitor {
   id: string;
   name: string;
@@ -14,27 +15,32 @@ interface Visitor {
   parkingSpotId: string | null;
 }
 
+// Interfaz para definir las propiedades del componente RecentVisitorsList.
 interface RecentVisitorsListProps {
   visitors: Visitor[];
 }
 
+// Componente para mostrar la lista de visitantes recientes.
 const RecentVisitorsList: React.FC<RecentVisitorsListProps> = ({ visitors }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation();
 
+  // Ordena los visitantes por fecha de entrada.
   const sortedVisitors = [...visitors].sort((a, b) => b.entryTime - a.entryTime);
 
+  // Filtra los visitantes según el término de búsqueda.
   const filteredVisitors = sortedVisitors.filter(visitor =>
     visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     visitor.rut.toLowerCase().includes(searchTerm.toLowerCase()) ||
     visitor.apartment.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Formatea la fecha y hora.
   const formatTime = (timestamp: number | null) => {
     if (!timestamp) return 'N/A';
     const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // El mes es en base 0.
     const year = date.getFullYear();
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return `${day}/${month}/${year} ${time}`;

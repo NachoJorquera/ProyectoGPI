@@ -9,6 +9,7 @@ import DeliveryHistoryList from './DeliveryHistoryList';
 import Modal from './Modal';
 import styles from './DeliveryManagementPage.module.css';
 
+// Interfaz para definir la estructura de un objeto de encomienda.
 interface Delivery {
   id: string;
   apartment: string;
@@ -20,12 +21,15 @@ interface Delivery {
   retrievedBy: string | null;
 }
 
+// Componente para la gestión de encomiendas.
 const DeliveryManagementPage: React.FC = () => {
+  // Estados para las encomiendas, la pestaña activa y el modal.
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [activeTab, setActiveTab] = useState<'register' | 'pending' | 'history'>('pending');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
 
+  // Efecto para obtener las encomiendas de Firestore.
   useEffect(() => {
     const qDeliveries = query(collection(db, 'deliveries'));
     const unsubscribeDeliveries = onSnapshot(qDeliveries, (snapshot) => {
@@ -41,6 +45,7 @@ const DeliveryManagementPage: React.FC = () => {
     };
   }, []);
 
+  // Maneja la adición de una nueva encomienda.
   const handleAddDelivery = async (deliveryData: { apartment: string; recipientName: string; courier: string }) => {
     try {
       const deliveryToAdd = {
@@ -57,6 +62,7 @@ const DeliveryManagementPage: React.FC = () => {
     }
   };
 
+  // Maneja la marcación de una encomienda como retirada.
   const handleMarkAsPickedUp = async (deliveryId: string, retrievedByName: string) => {
     try {
       const deliveryRef = doc(db, 'deliveries', deliveryId);

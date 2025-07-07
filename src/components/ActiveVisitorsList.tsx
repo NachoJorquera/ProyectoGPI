@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './ActiveVisitorsList.module.css';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir la estructura de un objeto de visitante.
 interface Visitor {
   id: string;
   name: string;
@@ -14,27 +15,32 @@ interface Visitor {
   parkingSpotId: string | null;
 }
 
+// Interfaz para definir las propiedades del componente ActiveVisitorsList.
 interface ActiveVisitorsListProps {
   visitors: Visitor[];
   onMarkExit: (visitorId: string) => void;
 }
 
+// Componente para mostrar la lista de visitantes activos.
 const ActiveVisitorsList: React.FC<ActiveVisitorsListProps> = ({ visitors, onMarkExit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { t } = useTranslation();
 
+  // Filtra los visitantes para mostrar solo los que están activos.
   const activeVisitors = visitors.filter(v => v.status === 'En el edificio');
 
+  // Filtra los visitantes activos según el término de búsqueda.
   const filteredVisitors = activeVisitors.filter(visitor =>
     visitor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     visitor.rut.toLowerCase().includes(searchTerm.toLowerCase()) ||
     visitor.apartment.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Formatea la fecha y hora de entrada/salida.
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // El mes es en base 0.
     const year = date.getFullYear();
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return `${day}/${month}/${year} ${time}`;

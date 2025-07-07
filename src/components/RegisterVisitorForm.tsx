@@ -4,6 +4,7 @@ import { db } from '../firebaseConfig';
 import { collection, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
+// Interfaz para definir la estructura de un objeto de estacionamiento.
 interface ParkingSpot {
   id: string;
   status: "disponible" | "ocupado";
@@ -13,6 +14,7 @@ interface ParkingSpot {
   notes?: string;
 }
 
+// Interfaz para definir la estructura de un objeto de visitante frecuente.
 interface FrequentVisitor {
   id: string;
   name: string;
@@ -21,12 +23,15 @@ interface FrequentVisitor {
   lastUsedPatente: string | null;
 }
 
+// Interfaz para definir las propiedades del componente RegisterVisitorForm.
 interface RegisterVisitorFormProps {
   onAddVisitor: (visitor: { name: string; rut: string; apartment: string; entryTime: number; licensePlate: string | null; parkingSpotId: string | null }, isFrequent: boolean) => void;
   frequentVisitors: FrequentVisitor[];
 }
 
+// Componente para registrar un nuevo visitante.
 const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor, frequentVisitors }) => {
+  // Estados para los campos del formulario.
   const [name, setName] = useState('');
   const [rut, setRut] = useState('');
   const [rutError, setRutError] = useState<string | null>(null);
@@ -39,6 +44,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
   const [lastUsedPatente, setLastUsedPatente] = useState<string | null>(null);
   const { t } = useTranslation();
 
+  // Limpia y formatea el RUT.
   const cleanRut = (inputRut: string) => {
     let cleaned = inputRut.replace(/[^0-9kK]/g, '').toUpperCase();
     if (cleaned.endsWith('11')) {
@@ -47,6 +53,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     return cleaned;
   };
 
+  // Valida el RUT.
   const validateRut = (inputRut: string): boolean => {
     const cleanedRut = cleanRut(inputRut);
     if (!/^[0-9]+[0-9K]$/.test(cleanedRut)) {
@@ -85,6 +92,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     return expectedDv === dv;
   };
 
+  // Efecto para obtener los estacionamientos disponibles.
   useEffect(() => {
     const parkingCollection = collection(db, 'estacionamientos');
     const unsubscribe = onSnapshot(parkingCollection, (snapshot) => {
@@ -98,6 +106,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     return () => unsubscribe();
   }, []);
 
+  // Efecto para filtrar los visitantes frecuentes según el RUT ingresado.
   useEffect(() => {
     if (rut.length > 0) {
       setFilteredFrequentVisitors(
@@ -108,6 +117,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
     }
   }, [rut, frequentVisitors]);
 
+  // Maneja la selección de un visitante frecuente.
   const handleFrequentVisitorSelect = (selectedRut: string) => {
     const selectedVisitor = frequentVisitors.find(fv => fv.rut === selectedRut);
     if (selectedVisitor) {
@@ -115,11 +125,12 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
       setRut(selectedVisitor.rut);
       setApartment(selectedVisitor.apartment);
       setLastUsedPatente(selectedVisitor.lastUsedPatente);
-      setLicensePlate(''); // Clear license plate on new selection
-      setFilteredFrequentVisitors([]); // Clear suggestions after selection
+      setLicensePlate(''); // Limpia la patente al seleccionar un nuevo visitante.
+      setFilteredFrequentVisitors([]); // Limpia las sugerencias después de la selección.
     }
   };
 
+  // Maneja el envío del formulario.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !rut || !apartment) {
@@ -142,7 +153,7 @@ const RegisterVisitorForm: React.FC<RegisterVisitorFormProps> = ({ onAddVisitor,
         const parkingRef = doc(db, 'estacionamientos', selectedParkingSpot);
         await updateDoc(parkingRef, {
           status: 'ocupado',
-          assignedToVisitId: rut, // Assuming RUT can be used as a temporary visit ID
+          assignedToVisitId: rut, // Asume que el RUT puede ser usado como ID temporal de visita.
         });
         parkingSpotIdToAssign = selectedParkingSpot;
       } catch (error) {

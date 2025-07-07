@@ -3,14 +3,17 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import styles from './Navbar.module.css';
 
+// Interfaz para definir las propiedades del componente Navbar.
 interface NavbarProps {
   onLogout: () => void;
 }
 
+// Componente para la barra de navegación.
 const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
 
+  // Cambia el idioma de la aplicación.
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
